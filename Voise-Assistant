@@ -1,0 +1,241 @@
+import speech_recognition as sr
+import pyttsx3 as py
+import wikipedia as wi
+import time
+from time import ctime
+import pywhatkit as pw
+import random
+import webbrowser
+import os
+import pyjokes
+import subprocess
+import datetime
+
+
+import tkinter as tk
+from tkinter import *
+from tkinter import messagebox
+from PIL import Image,ImageTk
+import os
+
+window=tk.Tk()
+window.title("Project")
+window.resizable(0,0)
+
+
+l4=tk.Label(window,text="Tap the button,then speak into your Assistant for Quick answers",font=('Times New Roman',13),fg='red')
+l4.place(x=12,y=50)
+
+
+
+def voice():
+    
+
+    voice=py.init()
+
+    voices = voice.getProperty('voices')       #getting details of current voice
+    voice.setProperty('voice', voices[1].id)   #changing index, changes voices. 1 for female
+    voice.setProperty("rate",150)#decrease the voice speed
+
+    def talk(text):
+        voice.say(text)
+        voice.runAndWait()
+    
+    
+    def note(text):
+        date=datetime.datetime.now()
+        file_name=str(date).replace(":","-")+"-note.txt"
+        with open(file_name,"w") as f:
+            f.write(text)
+        subprocess.Popen(["notepad.exe",file_name])
+    
+    
+    
+    def get_command():
+        r = sr.Recognizer()
+        mic = sr.Microphone()
+        with mic as source:
+            print("Say something:")
+            audio = r.listen(source)
+        try:
+            print("Recognizing...")
+            a=r.recognize_google(audio)
+            print("You Said:-"+a)
+            tk1=("You Said:-"+a)
+            l2=tk.Label(window,text=tk1,font=('Arial',20),fg='green')
+            l2.place(x=170,y=150)
+        except Exception:
+            print("say that again,please")
+            return "None"
+        return a
+        
+
+#wake word
+# def call():
+#     action_call="OK GOOGLE"
+#     #text=text.lower()
+#     voice_data=get_command()
+#     if action_call in voice_data:
+#         return True
+#     return False
+#call()
+
+    def replay():
+        global tka
+
+        voice_data=get_command()
+        #print("You:-"+voice_data)
+        greet=['hey','hello','hoi','tell me somthing','Hi there','Its nice to meet you','Hey, Heya or Hey there!','It’s a pleasure to meet you']
+        ch=random.choice(greet)
+        if "hello" in voice_data:
+            print(ch)
+            talk(ch)
+        elif "hai" in voice_data:
+            print(ch)
+            talk(ch)
+        elif "time" in voice_data:
+            print("sir the time is "+ctime())
+            talk("sir the time is "+ctime())
+        elif "search" in voice_data:
+            sch=pw.search(voice_data)
+            print("Here is what i found")
+            talk("Here is what i found")
+        elif "tell me about" in voice_data:
+            result=wi.summary(voice_data,sentences=2)
+            print(result)
+            talk(result)
+        elif "play"  in voice_data:
+            re=pw.playonyt(voice_data)#play on youtub
+            talk("Here is what i found")
+        elif "song" in voice_data:
+            sing=pw.playonyt("https://youtu.be/biO5PmtVp3Q")
+            print("OK....playing song🎵")
+            talk("OK....playing song🎵")
+        elif "open Word" in voice_data:
+            print("Opening Microsoft Word")
+            talk("Opening Microsoft Word") 
+            os.startfile(r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE")
+        elif "latest news" in voice_data:
+            # opening an URL in different web browser  
+            chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"  
+            webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chromePath))  
+            web = webbrowser.get('chrome')  
+            web.open("https://timesofindia.indiatimes.com/news")  
+            wb=web.open_new_tab("https://timesofindia.indiatimes.com/news")
+            print("here the latest news")
+            talk("here the latest news")
+        elif "open Chrome" in voice_data:
+            print("opening chrome")
+            talk("opening chrome")
+            os.startfile("C:\Program Files\Google\Chrome\Application\chrome.exe")
+        elif "joke" in voice_data:
+            jk=pyjokes.get_joke()
+            print(jk+"..............................do you like?........haha.......................hahaha.....hahahaha......")
+            talk(jk+"..............................do you like?........haha.......................hahaha.....hahahaha......")
+        elif "map" in voice_data:
+            chm_path="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+            webbrowser.register('chrome',None,webbrowser.BackgroundBrowser(chm_path))
+            webb=webbrowser.get('chrome')
+            webb.open("https://www.google.com/maps/@10.0070609,76.3058215,15z")
+            browser=webb.open_new_tab("https://www.google.com/maps/@10.0070609,76.3058215,15z")
+            print("opening map")
+            talk("opening map")
+        elif "Excel" in voice_data:
+            print("opening excle")
+            talk("opening Excel")
+            os.startfile(r"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE")
+        elif "YouTube" in voice_data:
+            chm_path="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+            webbrowser.register('chrome',None,webbrowser.BackgroundBrowser(chm_path))
+            webb=webbrowser.get('chrome')
+            webb.open("https://www.youtube.com/")
+            browser=webb.open_new_tab("https://www.youtube.com/")
+            print("opening YouTube")
+            talk("opening YouTube")
+        elif "note" in voice_data:
+            talk("what would you like me to write down?")
+            note_text=get_command()
+            note(note_text)
+            talk("I have made a note of that")
+        elif "Translate" in voice_data:
+            print("opening Translate:")
+            talk("opening Translate:-")
+            chm_path="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+            webbrowser.register('chrome',None,webbrowser.BackgroundBrowser(chm_path))
+            webb=webbrowser.get('chrome')
+            webb.open("https://translate.google.co.in/")
+            browser=webb.open_new_tab("https://translate.google.co.in/")
+        
+        elif "weather" in voice_data:
+            print("today weather:")
+            talk("today weather:-")
+            chm_path="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+            webbrowser.register('chrome',None,webbrowser.BackgroundBrowser(chm_path))
+            webb=webbrowser.get('chrome')
+            webb.open("https://www.accuweather.com/en/in/kochi/204289/weather-forecast/204289")
+            browser=webb.open_new_tab("https://www.accuweather.com/en/in/kochi/204289/weather-forecast/204289")
+
+
+        #general_qustion
+        elif "who are you" in voice_data:
+            print("Hello....iam your google Assistant.you can command me to perform various task")
+            talk("Hello....iam your google Assistant..........you can command me to perform various task")
+            comm=get_command()
+            if "what is your name" in comm:
+                print("I am your google Assistant")
+                talk("I am your google Assistant")
+        elif "how are you" in voice_data:
+            fi=["fine","not fine....feeling bad"]
+            fin=random.choice(fi)
+            print(fin)
+            talk(fin)
+            print("how are you?")
+            talk("how are you")
+            get=get_command()
+            if "fine" in get:
+                print("i am glad to hear it!")
+                talk("i am glad to hear it!")
+            elif "not good" in get:
+                print("iam sorry to hear that ....I hope you feel better")
+            talk("iam sorry to hear that....I hope you feel better")
+        elif "bye" in voice_data:
+                by=voice_data.replace('bye','')
+                print("ok...until we meet again....bye....")
+                talk("ok...until we meet again....bye...." )
+                
+                
+        
+        elif "what is your name" in voice_data:
+                print("I am your google Assistant")
+                talk("I am your google Assistant")
+                
+
+        else:
+            print("here are some results:-")
+            talk("Here are some results:-")
+            pw.search(voice_data)
+    replay()
+# header=tk.Button(window,image=photo1,command=voice)
+# header.place(x=5,y=0)
+# btn = tk.Button(window, text="Tap",command=voice  ,fg="white"  ,bg="blue"  ,width=15 , activebackground = "red" ,font=('Arial', 15, ' bold '))
+# btn.place(x=170, y=200)
+
+load1=Image.open(r"C:\Users\91953\Downloads\images.png")
+newsize = (100, 100)
+load1 = load1.resize(newsize)
+photo1=ImageTk.PhotoImage(load1)
+
+
+
+btn=tk.Button(window,image=photo1,command=voice,activebackground = "green")
+btn.place(x=240, y=200)
+
+
+    
+quitWindow = tk.Button(window, text="Exit", command=window.destroy  ,fg="white"  ,bg="green"  ,width=5 , activebackground = "white" ,font=('comic', 15, ' bold '))
+quitWindow.place(x=252, y=350)
+
+
+
+window.geometry("600x480")
+window.mainloop()
